@@ -22,9 +22,11 @@ args = parser.parse_args()
 
 
 time_schedule_link = requote_uri(
-    f'www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course[0]}.html'
+    f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course[0]}.html'
 )
 
+
+# print(args.course[2])
 with urlopen(time_schedule_link) as response:
     soup = BeautifulSoup(response, 'html.parser')
 
