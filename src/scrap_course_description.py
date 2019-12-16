@@ -2,13 +2,19 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from requests.utils import requote_uri
-
+from collections import namedtuple
 from handle_args import campus_name, course_name, quarter_name
 
+import re
 import argparse
 import requests
 import sys
 
+Course = namedtuple('Course', 'sln section credits days time building instructor status description enrolled_students max_students')
+
+def parse_course(course_info):
+    course_parts = course_info.strip().partition('\n')
+    return ( course_parts[0].split(), " ".join(course_parts[2].split()) )
 
 parser = argparse.ArgumentParser()
 parser.add_argument('course', type=course_name)
@@ -16,12 +22,6 @@ parser.add_argument('quarter', type=quarter_name)
 parser.add_argument('campus', type=campus_name)
 
 args = parser.parse_args()
-
-# args: course name, quarter, campus
-# search for specific quarter
-# search back multiple quarters
-# search for classes from past quarters
-
 
 time_schedule_link = requote_uri(
     f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course.code}.html'
@@ -32,6 +32,8 @@ time_schedule_link = requote_uri(
 
 # return json w/ props that format the table data
 # each object being one class
+
+
 response = requests.get(time_schedule_link)
 if response.status_code != 200:
     print('Error')
@@ -39,13 +41,23 @@ if response.status_code != 200:
 
 with urlopen(time_schedule_link) as response:
     soup = BeautifulSoup(response, 'html.parser')
-
     tables = soup.find_all('table')
-    for table in tables:
-        course_link = table.select(f'a[name=\"{args.course.name}\"]')
+    for t in tables:
+        course_link = t.select(f'a[name=\"{args.course.name}\"]')
         if course_link:
-            course_desc = table.find_next_sibling('table')
-            while not course_desc.has_attr('bgcolor') or course_desc['bgcolor'] == '#d3d3d3':
-                print(course_desc.get_text())
-                course_desc = course_desc.find_next_sibling('table')
+            course_info = t.find_next_sibling('table')
+            while not course_info.has_attr('bgcolor') or course_info['bgcolor'] == '#d3d3d3':
+                course_text = course_info.get_text()
+                # print(repr(course_text))
+                course_parts = course_text.strip().partition('\n')
+                course_info_generator = course_info.strings # this gets text in each tag
+                attr = re.split('\s\s+', course_parts[0].strip())
+                print(attr)
+                description = " ".join(course_parts[2].split())
+                print(description)
+               # print(Course(*attr[0].split(" "), attr[1], attr[2], attr[3], attr[4], " ".join([attr[5], attr[6]]),
+                #             attr[7], attr[8], description, 0))
+                course_info = course_info.find_next_sibling('table')
             break
+
+

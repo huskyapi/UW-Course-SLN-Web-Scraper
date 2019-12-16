@@ -6,6 +6,7 @@ Course = namedtuple('Course', 'code number name')
 
 
 def campus_name(string):
+    # Default argument, Seattle?
     if (string != 'Tacoma') and (string != 'Seattle') and (string != 'Bothell'):
         msg = f'\"{string}\" is not a valid UW campus name.'
         raise argparse.ArgumentTypeError(msg)
