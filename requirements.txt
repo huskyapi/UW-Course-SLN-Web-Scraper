@@ -185,7 +185,7 @@ unity-scope-virtualbox==0.1
 unity-scope-yelp==0.1
 unity-scope-zotero==0.1
 update-checker==0.16
-urllib3==1.22
+urllib3==1.24.2
 usb-creator==0.3.3
 virtualenv==16.6.1
 virtualenv-clone==0.5.3
