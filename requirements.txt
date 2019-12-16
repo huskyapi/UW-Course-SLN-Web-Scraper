@@ -142,7 +142,7 @@ python2-secrets==1.0.5
 pytimeparse==1.1.8
 pytz==2018.3
 pyudev==0.21.0
-pyxdg==0.25
+pyxdg==0.26
 PyYAML==3.12
 pyzmq==18.1.0
 qtconsole==4.5.5
