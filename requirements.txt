@@ -107,7 +107,7 @@ parso==0.5.1
 path-and-address==2.0.1
 pexpect==4.2.1
 pickleshare==0.7.5
-Pillow==5.1.0
+Pillow==6.2.0
 pipenv==2018.11.26
 plainbox==0.25
 praw==6.3.1
