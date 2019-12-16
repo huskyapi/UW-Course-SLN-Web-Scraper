@@ -21,7 +21,7 @@ def course_name(string):
     if (not r.match(course_name)):
         msg = f'\"{string}\" is not a valid course name. (i.e, astbio300, INFO200, B PHYS 121)'
         raise argparse.ArgumentTypeError(msg)
-    return [ course_code, course_number, course_name] 
+    return [ course_code, course_number, course_name ] 
 
 def quarter_name(string):
     raw_string = string.replace(" ", "")

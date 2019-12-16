@@ -2,10 +2,13 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from requests.utils import requote_uri
+from flask import Flask
 
 from handle_args import campus_name, course_name, quarter_name
 
 import argparse
+import requests
+import sys
 
 
 parser = argparse.ArgumentParser()
@@ -25,16 +28,28 @@ time_schedule_link = requote_uri(
     f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course[0]}.html'
 )
 
+# return dict w/ 
 
-# print(args.course[2])
+
+# make into a function
+# have this be called by a separate main.py file
+
+# return json w/ props that format the table data
+# each object being one class
+response = requests.get(time_schedule_link)
+if response.status_code != 200:
+    print('Error')
+    sys.exit(1)
+
 with urlopen(time_schedule_link) as response:
     soup = BeautifulSoup(response, 'html.parser')
 
-    # Find table with a link with the name we want
-    for table in soup.find_all('table'):
-        for link in table.select('a[name]'):
-            if (link['name'] == args.course[2]):
-                course_description = table.find_next_sibling('table')
-                while(not course_description.has_attr('bgcolor') or course_description['bgcolor'] == '#d3d3d3'):
-                    print(course_description.get_text())
-                    course_description = course_description.find_next_sibling('table')
+    tables = soup.find_all('table')
+    for table in tables:
+        course_link = table.select(f'a[name=\"{args.course[2]}\"]')
+        if (course_link):
+            course_desc = table.find_next_sibling('table')
+            while (not course_desc.has_attr('bgcolor') or course_desc['bgcolor'] == '#d3d3d3'):
+                print(course_desc.get_text())
+                course_desc = course_desc.find_next_sibling('table')
+            break
