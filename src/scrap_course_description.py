@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from requests.utils import requote_uri
-from flask import Flask
 
 from handle_args import campus_name, course_name, quarter_name
 
@@ -25,11 +24,8 @@ args = parser.parse_args()
 
 
 time_schedule_link = requote_uri(
-    f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course[0]}.html'
+    f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course.code}.html'
 )
-
-# return dict w/ 
-
 
 # make into a function
 # have this be called by a separate main.py file
@@ -46,10 +42,10 @@ with urlopen(time_schedule_link) as response:
 
     tables = soup.find_all('table')
     for table in tables:
-        course_link = table.select(f'a[name=\"{args.course[2]}\"]')
-        if (course_link):
+        course_link = table.select(f'a[name=\"{args.course.name}\"]')
+        if course_link:
             course_desc = table.find_next_sibling('table')
-            while (not course_desc.has_attr('bgcolor') or course_desc['bgcolor'] == '#d3d3d3'):
+            while not course_desc.has_attr('bgcolor') or course_desc['bgcolor'] == '#d3d3d3':
                 print(course_desc.get_text())
                 course_desc = course_desc.find_next_sibling('table')
             break
