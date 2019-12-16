@@ -137,7 +137,7 @@ pyrsistent==0.15.5
 python-apt==1.6.4
 python-dateutil==2.6.1
 python-debian==0.1.32
-python-gnupg==0.4.1
+python-gnupg==0.4.4
 python2-secrets==1.0.5
 pytimeparse==1.1.8
 pytz==2018.3
