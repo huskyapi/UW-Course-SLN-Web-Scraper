@@ -1,3 +1,8 @@
+'''
+Utility file that validates input arguments.
+12/17/2019
+'''
+
 import argparse
 import re
 from collections import namedtuple
