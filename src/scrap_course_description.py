@@ -5,15 +5,14 @@ from requests.utils import requote_uri
 from collections import namedtuple
 
 from handle_args import campus_name, course_name, quarter_name
-# from utils import split_elem
 
-import itertools
 import re
 import argparse
 import requests
 import sys
 
-Course = namedtuple('Course', 'sln section credits days time building instructor status description enrolled_students max_students')
+Course = namedtuple('Course', 'sln section credits days time building_abbr room_number instructor ' 
+                    'status enrolled_students max_students description')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('course', type=course_name)
@@ -56,11 +55,7 @@ with urlopen(time_schedule_link) as response:
                         pos = attributes.index(attr)
                         elem1, elem2 = attr.split()
                         attributes[pos:pos + 1] = (elem1, elem2)
-                print(description)
-                print(attributes)
-                print(len(attributes))
-               # print(Course(*attr[0].split(" "), attr[1], attr[2], attr[3], attr[4], " ".join([attr[5], attr[6]]),
-                #             attr[7], attr[8], description, 0))
+                print(Course(*attributes, description))
                 course_info = course_info.find_next_sibling('table')
             break
 
