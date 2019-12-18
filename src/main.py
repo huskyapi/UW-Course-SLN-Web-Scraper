@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from requests.utils import requote_uri
 
-from validation import campus_name, course_name, quarter_name
-from parser import parse_course
+from utils.validation import campus_name, course_name, quarter_name
+from utils.parser import parse_course
 
 import argparse
 import requests
@@ -33,7 +33,9 @@ with urlopen(time_schedule_link) as response:
         course_link = t.select(f'a[name=\"{args.course.name}\"]')
         if course_link:
             course_info = t.find_next_sibling('table')
-            while not course_info.has_attr('bgcolor') or course_info['bgcolor'] == '#d3d3d3':
+            # Tables with course descriptions don't have a background color
+            # Header row has width=100% as an attribute
+            while not course_info.has_attr('bgcolor') or course_info['width'] == '100%':
                 course = parse_course(course_info.get_text())
                 course_info = course_info.find_next_sibling('table')
             break
