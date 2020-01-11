@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+import bs4
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from requests.utils import requote_uri
@@ -17,6 +19,7 @@ parser.add_argument('campus', type=campus_name)
 
 args = parser.parse_args()
 
+
 time_schedule_link = requote_uri(
     f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course.code}.html'
 )
@@ -33,8 +36,6 @@ with urlopen(time_schedule_link) as response:
         course_link = t.select(f'a[name=\"{args.course.name}\"]')
         if course_link:
             course_info = t.find_next_sibling('table')
-            # Tables with course descriptions don't have a background color
-            # Header row has width=100% as an attribute (This doesn't work)
             while not course_info.has_attr('bgcolor') or course_info['bgcolor'] == '#d3d3d3':
                 course = parse_course(course_info.get_text())
                 print(course)

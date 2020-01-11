@@ -3,42 +3,26 @@ Handles course data. (More description later)
 '''
 
 from collections import namedtuple
-from schema import Schema
-
-
-import re
 import json
 
-fields=('sln',    'section',           'credits',      'days',
-        'time', 'building_abbr', 'room_number',      'instructor',   'status',
-        'enrolled_students', 'max_students', 'description')
+TIME_SCHEDULE_URL = "https://www.washington.edu/students/timeschd"
+FIELDS=('is_restricted', 'sln', 'section_id', 'credits', 'meeting_times', 'room',
+        'instructor', 'status', 'enrollment', 'enrollment_limit', 'is_crnc', 'course_fee', 'special_type')
 
-Course = namedtuple('Course', fields, defaults=(None,) * len(fields))
+FIELD_LIMITS=(7, 6, 3, 8, 18, 14, 27, 9, 9, 9, 5, 6)
+FIELD_SLICES=[0, 7, 13, 16, 24, 42, 56, 83, 92, 101, 110, 115, 121]
+
+Course = namedtuple('Course', FIELDS, defaults=(None,) * len(FIELDS))
+def create_time_schedule_url(campus, quarter, course_code):
+    return f'{TIME_SCHEDULE_URL}/{campus}{quarter}/{course_code}.html'
 
 def parse_course(text):
-    parts = text.strip().partition('\n')
+    parts = text.partition('\r\n')
     description = " ".join(parts[2].split())
-    attributes = re.split('\s\s+', parts[0].strip())
+    unparsed_fields = parts[0]
+    fields = [ unparsed_fields[i:j].strip() for i, j in zip(FIELD_SLICES, FIELD_SLICES[1:])]
+    return Course(*fields, description)
 
-
-    # for attr in attributes:
-    #    if not re.fullmatch(r'[a-zA-Z,. ]+', attr) and ' ' in attr:
-    #        pos = attributes.index(attr)
-    #        elem1, elem2 = attr.split()
-    #        attributes[pos:pos + 1] = (elem1, elem2)
-    sln = attributes[0] or None
-    return Course(*attributes, description)
-
-def get_csv(course):
-    # course._fields - gets the fields of a namedtuple
-    # zip() - makes a pairwise matched tuple
-    for elem, field in zip(course, course._fields):
-        print(elem, field)
-
-# https://stackoverflow.com/questions/5906831/serializing-a-python-namedtuple-to-json
 def get_json(course):
-    # course._asdict() - serializes a namedtuple as dict
-    # this only serializes one course
-    # what if we want to return a file with many namedtuples at once?
     print(json.dumps(course._asdict()))
 
