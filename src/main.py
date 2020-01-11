@@ -34,9 +34,10 @@ with urlopen(time_schedule_link) as response:
         if course_link:
             course_info = t.find_next_sibling('table')
             # Tables with course descriptions don't have a background color
-            # Header row has width=100% as an attribute
-            while not course_info.has_attr('bgcolor') or course_info['width'] == '100%':
+            # Header row has width=100% as an attribute (This doesn't work)
+            while not course_info.has_attr('bgcolor') or course_info['bgcolor'] == '#d3d3d3':
                 course = parse_course(course_info.get_text())
+                print(course)
                 course_info = course_info.find_next_sibling('table')
             break
 
