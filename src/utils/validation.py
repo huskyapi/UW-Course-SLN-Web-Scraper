@@ -11,12 +11,12 @@ Course = namedtuple('Course', 'code number name')
 
 
 def campus_name(string):
-    # Default argument, Seattle?
-    if (string != 'Tacoma') and (string != 'Seattle') and (string != 'Bothell'):
-        msg = f'\"{string}\" is not a valid UW campus name.'
+    campus = string.lower()
+    if (campus != 'tacoma') and (campus != 'seattle') and (campus != 'bothell'):
+        msg = f'\"{campus}\" is not a valid UW campus name.'
         raise argparse.ArgumentTypeError(msg)
-    if string == 'Tacoma' or string == 'Bothell':
-        return f'{string[:1]}/'
+    if  campus == 'tacoma' or campus == 'bothell':
+        return f'{campus[:1]}/'
     else:
         return ''
 

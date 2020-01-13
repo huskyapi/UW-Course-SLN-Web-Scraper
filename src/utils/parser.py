@@ -23,6 +23,5 @@ def parse_course(text):
     fields = [ unparsed_fields[i:j].strip() for i, j in zip(FIELD_SLICES, FIELD_SLICES[1:])]
     return Course(*fields, description)
 
-def get_json(course):
-    print(json.dumps(course._asdict()))
+
 
