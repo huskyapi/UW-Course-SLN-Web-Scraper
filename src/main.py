@@ -1,16 +1,13 @@
 #!/usr/bin/python3
 
-import bs4
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
-from requests.utils import requote_uri
-
-from utils.validation import campus_name, course_name, quarter_name
-from utils.parser import parse_course
-
 import argparse
-import requests
-import sys
+
+from bs4                import BeautifulSoup
+
+from utils.validation   import campus_name, course_name, quarter_name
+from utils.parser       import parse_course
+from utils.utilities    import create_time_schedule_url
+from utils.utilities    import get_html
 
 parser = argparse.ArgumentParser()
 parser.add_argument('course', type=course_name)
@@ -19,28 +16,27 @@ parser.add_argument('campus', type=campus_name)
 
 args = parser.parse_args()
 
+def get_course(campus, quarter, course):
+    url = create_time_schedule_url(campus, quarter, course.code)
+    response = get_html(url)
+    if response is not None:
+        soup = BeautifulSoup(response, "html.parser")
+        courses = soup.find_all("table")
+        for c in courses:
+            course_link = c.select(f"a[name=\"{course.name}\"]")
+            if course_link:
+                course_info = c.find_next_sibling("table")
+                while not course_info.has_attr("bgcolor") or course_info["bgcolor"] == "#d3d3d3":
+                    course_section = parse_course(course_info.get_text())
+                    print(course_section)
+                    course_info = course_info.find_next_sibling("table")
+                break
 
-time_schedule_link = requote_uri(
-    f'https://www.washington.edu/students/timeschd/{args.campus}{args.quarter}/{args.course.code}.html'
-)
+def main():
+    get_course(args.campus, args.quarter, args.course)
 
-response = requests.get(time_schedule_link)
-if response.status_code != 200:
-    print('Error')
-    sys.exit(1)
-
-with urlopen(time_schedule_link) as response:
-    soup = BeautifulSoup(response, 'html.parser')
-    tables = soup.find_all('table')
-    for t in tables:
-        course_link = t.select(f'a[name=\"{args.course.name}\"]')
-        if course_link:
-            course_info = t.find_next_sibling('table')
-            while not course_info.has_attr('bgcolor') or course_info['bgcolor'] == '#d3d3d3':
-                course = parse_course(course_info.get_text())
-                print(course)
-                course_info = course_info.find_next_sibling('table')
-            break
+if __name__ == '__main__':
+    main()
 
 
 
