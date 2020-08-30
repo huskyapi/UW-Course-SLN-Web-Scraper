@@ -8,7 +8,9 @@ Ex: `python3 main.py INFO200 spring2020 seattle`
 
 # Setup
 
-`pip install -r requirements.txt`
+`pyenv local`
+
+`poetry install`
 
 ## Commands
 

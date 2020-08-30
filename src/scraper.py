@@ -2,19 +2,20 @@
 
 import argparse
 
-from bs4                import BeautifulSoup
+from bs4 import BeautifulSoup
 
-from utils.validation   import campus_name, course_name, quarter_name
-from utils.parser       import parse_course
-from utils.utilities    import create_time_schedule_url
-from utils.utilities    import get_html
+from course import Course
+from utils import validate_course_name, validate_quarter_name, validate_campus_name, \
+                    create_time_schedule_url, get_html
 
 parser = argparse.ArgumentParser()
-parser.add_argument('course', type=course_name)
-parser.add_argument('quarter', type=quarter_name)
-parser.add_argument('campus', type=campus_name)
-
+parser.add_argument('course', type=validate_course_name)
+parser.add_argument('quarter', type=validate_quarter_name)
+parser.add_argument('campus', type=validate_campus_name)
 args = parser.parse_args()
+
+def get_courses_by_department(quarter, department):
+    pass
 
 def get_course(campus, quarter, course):
     url = create_time_schedule_url(campus, quarter, course.code)
@@ -27,17 +28,15 @@ def get_course(campus, quarter, course):
             if course_link:
                 course_info = c.find_next_sibling("table")
                 while not course_info.has_attr("bgcolor") or course_info["bgcolor"] == "#d3d3d3":
-                    course_section = parse_course(course_info.get_text())
-                    print(course_section)
+                    course_section = Course(course_info.get_text())
+                    print(course_section.serialize())
                     course_info = course_info.find_next_sibling("table")
                 break
+
 
 def main():
     get_course(args.campus, args.quarter, args.course)
 
+
 if __name__ == '__main__':
     main()
-
-
-
-
