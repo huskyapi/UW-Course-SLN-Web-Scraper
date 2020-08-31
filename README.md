@@ -2,23 +2,24 @@
 
 # Usage
 
-`python3 main.py <course> <quarter> <campus>`
+`poetry shell`
 
-Ex: `python3 main.py INFO200 spring2020 seattle`
+`python3 src/main.py`
+
 
 # Setup
 
-`pyenv local`
+Install [poetry](https://python-poetry.org/).
 
-`poetry install`
+Install [pyenv](https://github.com/pyenv/pyenv).
 
-## Commands
+Install `Python 3.8.4` using `pyenv`.
 
-`python3 main.py <course>`
 
-`python3 main.py <course> <quarter> <campus>`
+Run the following commands:
 
-`python3 main.py <professor>`
-
-`python3 main.py <professor> <quarter> <campus>`
+```
+pyenv local
+poetry install
+```
 
