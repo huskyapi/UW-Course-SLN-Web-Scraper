@@ -11,7 +11,6 @@ CourseName = namedtuple('CourseName', 'code number name')
 
 
 def get_html(url):
-    print(url)
     try:
         with closing(get(url, stream=True)) as response:
             if is_html(response):
@@ -31,6 +30,9 @@ def is_html(resp):
 
 
 def create_time_schedule_url(campus, quarter, course_code):
+    quarter = validate_quarter_name(quarter)
+    campus = validate_campus_name(campus)
+    course_code = course_code.lower()
     url = f'{TIME_SCHEDULE_URL}/{campus}{quarter}/{course_code}.html'
     return requote_uri(url)
 
