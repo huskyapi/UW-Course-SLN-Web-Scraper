@@ -9,4 +9,3 @@ OUTPUT_FILE = "courses.json"
 for s in SEASONS:
     for y in YEARS:
         get_courses_by_department(CAMPUS, s, y, DEPARTMENT, OUTPUT_FILE)
-
