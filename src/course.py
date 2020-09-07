@@ -35,6 +35,8 @@ class Course(object):
                   [start:end].strip()
                   for start, end in zip(LENGTHS, LENGTHS[1:])]
 
+        split_enroll = fields[8].replace(" ", "").split("/")
+        print(split_enroll)
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
         self.sln = fields[1]
