@@ -21,22 +21,19 @@ class Course(object):
         else:
             gen_ed = ""
         preface = re.sub("\((.*)$", "", preface)
+        enrollment_codes = ['E', 'C']
         code, number, name = preface.split(maxsplit=2)
-
         self.name = name
         self.code = code
         self.number = number
         self.quarter = quarter
         self.year = year
         self.gen_ed_marker = gen_ed
-
         tokens = section.partition('\r\n')
         fields = [tokens[0]
                   [start:end].strip()
                   for start, end in zip(LENGTHS, LENGTHS[1:])]
 
-        split_enroll = fields[8].replace(" ", "").split("/")
-        print(split_enroll)
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
         self.sln = fields[1]
@@ -46,18 +43,20 @@ class Course(object):
         self.room = fields[5]
         self.instructor = fields[6]
         self.status = fields[7]
-        enrollment = fields[8].split('/  ')
-        self.currently_enrolled = enrollment[0]
-        self.enrollment_limit = enrollment[1]
+        split_enroll = fields[8].replace(" ", "").split("/")
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = fields[11]
 
-        # Parse to JSON Int
-        if ("E" in self.enrollment_limit):
-            self.enrollment_limit = self.enrollment_limit.replace('E', "")
-        self.currently_enrolled = int(self.currently_enrolled)
-        self.enrollment_limit = int(self.enrollment_limit)
+        # Parse enrollment field to 2 separate JSON numbers
+        if len(split_enroll) > 1:
+            for code in enrollment_codes:
+                split_enroll[1] = split_enroll[1].replace(code, "")
+            self.currently_enrolled = int(split_enroll[0])
+            self.enrollment_limit = int(split_enroll[1])
+        else:
+            self.currently_enrolled = 0
+            self.enrollment_limit = 0
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
