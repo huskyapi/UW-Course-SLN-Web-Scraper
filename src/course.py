@@ -46,16 +46,18 @@ class Course(object):
         self.room = fields[5]
         self.instructor = fields[6]
         self.status = fields[7]
-        self.enrollment = fields[8]
-        if len(split_enroll) > 1:
-            self.currently_enrolled = split_enroll[0]
-            self.enrollment_limit = split_enroll[1]
-        else:
-            self.currently_enrolled = 0
-            self.enrollment_limit = 0
+        enrollment = fields[8].split('/  ')
+        self.currently_enrolled = enrollment[0]
+        self.enrollment_limit = enrollment[1]
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = fields[11]
+
+        # Parse to JSON Int
+        if ("E" in self.enrollment_limit):
+            self.enrollment_limit = self.enrollment_limit.replace('E', "")
+        self.currently_enrolled = int(self.currently_enrolled)
+        self.enrollment_limit = int(self.enrollment_limit)
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)

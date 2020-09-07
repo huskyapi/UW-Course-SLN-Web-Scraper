@@ -1,0 +1,27 @@
+// VS Code settings created with love by MrShoopa 💗
+{
+	// Editor Styling
+	"workbench.colorCustomizations": {
+		"titleBar.border": "#b4a800",
+		"titleBar.activeBackground": "#350053",
+		"titleBar.inactiveBackground": "#180025",
+		"activityBar.background": "#231825"
+	},
+
+	// Editor and Debugging Settings
+	"python.linting.pylintEnabled": true,
+	"explorer.confirmDragAndDrop": false,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 15000,
+	"editor.formatOnType": true,
+	"editor.formatOnSave": true,
+
+	// Discord Presence
+	"discord.largeImage": "Editing a {LANG} file",
+	"discord.detailsEditing": "⚒ on HuskyAPI Web Scraper",
+	"discord.lowerDetailsEditing": "Line {currentline} of {filename}",
+	"discord.detailsIdle": "Takin a snooze or staring into exams.. .",
+	"discord.lowerDetailsIdle": "🍃",
+	"discord.detailsDebugging": "Debugging HuskyAPI Web Scraper 🌠",
+	"discord.lowerDetailsDebugging": "Debugging {filename}. Will they succeed? 🙀"
+}
