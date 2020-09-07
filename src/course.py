@@ -11,6 +11,7 @@ class ComplexEncoder(json.JSONEncoder):
             return obj.__dict__
         return json.JSONEncoder(self, obj)
 
+
 class Course(object):
     def __init__(self, preface, section, quarter, year):
         preface = re.sub("Prerequisites(.*)$", "", preface)
@@ -34,7 +35,8 @@ class Course(object):
                   [start:end].strip()
                   for start, end in zip(LENGTHS, LENGTHS[1:])]
 
-        split_enroll = fields[8].replace(" ","").split("/")
+        split_enroll = fields[8].replace(" ", "").split("/")
+        print(split_enroll)
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
         self.sln = fields[1]
@@ -44,8 +46,13 @@ class Course(object):
         self.room = fields[5]
         self.instructor = fields[6]
         self.status = fields[7]
-        self.currently_enrolled = split_enroll[0]
-        self.enrollment_limit = split_enroll[1]
+        self.enrollment = fields[8]
+        if len(split_enroll) > 1:
+            self.currently_enrolled = split_enroll[0]
+            self.enrollment_limit = split_enroll[1]
+        else:
+            self.currently_enrolled = 0
+            self.enrollment_limit = 0
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = fields[11]
