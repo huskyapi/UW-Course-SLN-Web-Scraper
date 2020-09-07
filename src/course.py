@@ -34,6 +34,7 @@ class Course(object):
                   [start:end].strip()
                   for start, end in zip(LENGTHS, LENGTHS[1:])]
 
+        split_enroll = fields[8].replace(" ","").split("/")
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
         self.sln = fields[1]
@@ -43,7 +44,8 @@ class Course(object):
         self.room = fields[5]
         self.instructor = fields[6]
         self.status = fields[7]
-        self.enrollment = fields[8]
+        self.currently_enrolled = split_enroll[0]
+        self.enrollment_limit = split_enroll[1]
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = fields[11]
