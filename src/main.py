@@ -1,4 +1,4 @@
-from src.scraper import get_courses_by_department
+from scraper import get_courses_by_department
 
 SEASONS = ["AUTUMN", "WINTER", "SPRING", "SUMMER"]
 YEARS = ["2003", "2004", "2005", "2006", "2007", "2008",
