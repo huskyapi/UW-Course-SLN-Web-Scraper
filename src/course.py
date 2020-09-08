@@ -15,12 +15,13 @@ class ComplexEncoder(json.JSONEncoder):
 class Course(object):
     def __init__(self, preface, section, quarter, year):
         preface = re.sub("Prerequisites(.*)$", "", preface)
-        gen_ed = re.search("\((.*?)\)", preface)
+        gen_ed = re.search("\\((.*?)\\)", preface)
         if gen_ed:
             gen_ed = gen_ed.group(0)[1:][:-1]
         else:
             gen_ed = ""
-        preface = re.sub("\((.*)$", "", preface)
+
+        preface = re.sub("\\((.*)$", "", preface)
         enrollment_codes = ['E', 'C']
         code, number, name = preface.split(maxsplit=2)
         self.name = name
@@ -36,12 +37,19 @@ class Course(object):
 
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
-        self.sln = fields[1]
+        self.sln = fields[1] if ">" not in fields[1] else \
+            fields[1].replace(">", "")
         self.section_id = fields[2]
         self.credits = fields[3]
-        self.meeting_times = fields[4]
+        self.meeting_times = ' '.join(fields[4].split())
         self.room = fields[5]
-        self.instructor = fields[6]
+        pos = 0
+        if "Open" in fields[6]:
+            pos = fields[6].index("Open")
+        elif "Closed" in fields[6]:
+            pos = fields[6].index("Closed")
+        self.instructor = ' '.join(fields[6][0:pos].split()) \
+            if pos != 0 else 'No instructor assigned'
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
         self.is_crnc = fields[9]
