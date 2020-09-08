@@ -1,0 +1,14 @@
+language: python
+dist: xenial
+python:
+  - 3.8
+
+jobs:
+  include:
+    - stage: test
+      install:
+        - pip install --upgrade pip
+        - pip install poetry
+        - poetry install -v
+      script:
+        - python -m pytest tests/
