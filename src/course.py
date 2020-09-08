@@ -37,7 +37,8 @@ class Course(object):
 
         self.description = " ".join(tokens[2].split())
         self.is_restricted = fields[0]
-        self.sln = fields[1] if ">" not in fields[1] else fields[1].replace(">", "")
+        self.sln = fields[1] if ">" not in fields[1] else \
+            fields[1].replace(">", "")
         self.section_id = fields[2]
         self.credits = fields[3]
         self.meeting_times = ' '.join(fields[4].split())
@@ -47,7 +48,8 @@ class Course(object):
             pos = fields[6].index("Open")
         elif "Closed" in fields[6]:
             pos = fields[6].index("Closed")
-        self.instructor = ' '.join(fields[6][0:pos].split()) if pos != 0 else 'No instructor assigned'
+        self.instructor = ' '.join(fields[6][0:pos].split()) \
+            if pos != 0 else 'No instructor assigned'
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
         self.is_crnc = fields[9]
