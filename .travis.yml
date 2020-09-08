@@ -17,6 +17,7 @@ jobs:
         - poetry run flake8 src tests
     - stage: test
       install:
+        - pip install poetry
         - pip install --upgrade pip
         - poetry install
       script:
