@@ -26,6 +26,10 @@ six = "1.13.0"
 soupsieve = "1.9.5"
 urllib3 = "1.25.7"
 Werkzeug = "0.16.0"
+pytest = "^6.0.1"
+requests_file = "^1.5.1"
+pytest-mock = "^3.3.1"
+mock = "^4.0.2"
 
 [tool.poetry.dev-dependencies]
 

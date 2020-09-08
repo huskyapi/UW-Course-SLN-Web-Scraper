@@ -4,12 +4,13 @@ import sys
 
 from bs4 import BeautifulSoup
 
-from course import Course
-from utils import create_time_schedule_url, get_html
+from src.course import Course
+from src.utils import create_time_schedule_url, get_html
 
 
-def get_courses_by_department(campus, quarter, year, department_code, filename=None):
-    url = create_time_schedule_url(campus, f"{quarter}{year}", department_code)
+def get_courses_by_department(campus, quarter, year, department_code, filename=None, url=None):
+    if not url:
+        url = create_time_schedule_url(campus, f"{quarter}{year}", department_code)
     response = get_html(url)
     if response is not None:
         soup = BeautifulSoup(response, "html.parser")
@@ -20,6 +21,7 @@ def get_courses_by_department(campus, quarter, year, department_code, filename=N
 
     else:
         print(f"No time schedule available for {campus}, {quarter}", file=sys.syserr)
+
 
 def get_course(campus, quarter, year, course):
     url = create_time_schedule_url(campus, f"{quarter}{year}", course.code)
