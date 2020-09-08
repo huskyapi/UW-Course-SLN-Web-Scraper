@@ -4,8 +4,8 @@ import sys
 
 from bs4 import BeautifulSoup
 
-from src.course import Course
-from src.utils import create_time_schedule_url, get_html
+from course import Course
+from utils import create_time_schedule_url, get_html
 
 
 def get_courses_by_department(campus, quarter, year, department_code,
@@ -34,7 +34,7 @@ def get_courses_by_department(campus, quarter, year, department_code,
               file=sys.syserr)
 
 
-def get_course(campus, quarter, year, department_code, course_name):
+def get_course(campus, quarter, year, department_code, course_name, filename=None):
     """
     Scraps the course that corresponds with the given campus,
     quarter, year, and course information.
@@ -50,8 +50,7 @@ def get_course(campus, quarter, year, department_code, course_name):
         courses = soup.find_all("table")
         for crs in courses:
             scrap_course(crs, f"a[name=\"{course_name}\"]",
-                         quarter, year, None)
-            break
+                         quarter, year, filename)
     else:
         print(f"No time schedule available for {campus}, {quarter}")
 
