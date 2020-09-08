@@ -14,7 +14,7 @@ jobs:
         - pip install poetry
         - poetry install
       script:
-        - poetry run flake8 src tests
+        - poetry run flake8 scraper tests
     - stage: test
       install:
         - pip install poetry
