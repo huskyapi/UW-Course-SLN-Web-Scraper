@@ -21,7 +21,7 @@ class Course(object):
         else:
             gen_ed = ""
 
-        preface = re.sub("\((.*)$", "", preface)
+        preface = re.sub("\\((.*)$", "", preface)
         enrollment_codes = ['E', 'C']
         code, number, name = preface.split(maxsplit=2)
         self.name = name
