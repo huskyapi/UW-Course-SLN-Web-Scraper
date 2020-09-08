@@ -1,0 +1,25 @@
+language: python
+dist: xenial
+python:
+  - 3.8
+
+stages:
+  - lint
+  - test
+
+jobs:
+  include:
+    - stage: lint
+      install:
+        - pip install poetry
+        - poetry install
+      script:
+        - poetry run flake8 src tests
+    - stage: test
+      install:
+        - pip install poetry
+        - pip install --upgrade pip
+        - poetry install
+      script:
+        - poetry check
+        - python -m pytest tests/
