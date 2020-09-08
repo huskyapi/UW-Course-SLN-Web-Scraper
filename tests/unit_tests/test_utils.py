@@ -1,9 +1,8 @@
 import argparse
 import pytest
 
-from src.utils import validate_campus_name, validate_course_name, \
-    validate_quarter_name, create_time_schedule_url, \
-    is_url, get_html
+from scraper.utils import validate_campus_name, validate_quarter_name, \
+    validate_course_name, create_time_schedule_url, is_url, get_html
 
 
 def test_get_html():

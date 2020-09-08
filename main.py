@@ -1,4 +1,4 @@
-from scraper import get_courses_by_department
+from scraper.scraper import get_courses_by_department
 
 SEASONS = ["AUTUMN", "WINTER", "SPRING", "SUMMER"]
 YEARS = ["2003", "2004", "2005", "2006", "2007", "2008",
@@ -8,6 +8,9 @@ DEPARTMENT = "CSS"
 CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
 
+print("Starting web scraper...")
 for s in SEASONS:
     for y in YEARS:
+        print(f"\tGetting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
         get_courses_by_department(CAMPUS, s, y, DEPARTMENT, OUTPUT_FILE)
+print(f"Scraping complete! See {OUTPUT_FILE} for results.")

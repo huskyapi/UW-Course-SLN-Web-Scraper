@@ -2,11 +2,7 @@
 
 # Usage
 
-`poetry shell`
-
-`python3 src/main.py`
-
-Modify the variables in `src/main.py` to change which department, what years, what campus, etc is scraped.
+Modify the variables in `main.py` to change which department, what years, what campus, etc is scraped.
 
 ```python
 # Default values 
@@ -16,6 +12,15 @@ DEPARTMENT = "CSS"
 CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
 ```
+
+### Basic
+
+
+```
+poetry shell
+python3 main.py
+```
+
 
 # Setup
 
@@ -31,5 +36,15 @@ Run the following commands:
 ```
 pyenv local 3.8.4
 poetry install
+```
+
+## Development
+
+To develop and test locally using Docker, install Docker.
+Then run the following commands:
+
+```
+docker build --target development -t huskyapi/web-scraper .
+docker run -it huskyapi/web-scraper /bin/bash
 ```
 

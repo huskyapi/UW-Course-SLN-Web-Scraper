@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from src.scraper import scrap_course
+from scraper.scraper import scrap_course
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
