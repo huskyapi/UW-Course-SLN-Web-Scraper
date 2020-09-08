@@ -15,12 +15,13 @@ class ComplexEncoder(json.JSONEncoder):
 class Course(object):
     def __init__(self, preface, section, quarter, year):
         preface = re.sub("Prerequisites(.*)$", "", preface)
-        gen_ed = re.search("\((.*?)\)", preface)
+        gen_ed = re.search("\\((.*?)\\)", preface)
         if gen_ed:
             gen_ed = gen_ed.group(0)[1:][:-1]
         else:
             gen_ed = ""
-        preface = re.sub("\((.*)$", "", preface)
+
+        preface = re.sub("\\((.*)$", "", preface)
         enrollment_codes = ['E', 'C']
         code, number, name = preface.split(maxsplit=2)
         self.name = name
