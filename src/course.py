@@ -56,22 +56,7 @@ class Course(object):
         self.course_fee = fields[10]
         self.special_type = fields[11]
 
-        # Parse meeting times into day arguments, starting time, and ending time
-        if "to be arranged" in meeting_times:
-            self.meeting_days = ["TBA"]
-            self.meeting_time_start = "TBA"
-            self.meeting_time_end = "TBA"
-        else:
-            meeting_times = meeting_times.split(' ')
-            self.meeting_days = re.findall(
-                "[A-Z][a-z]{0,1}[a-z]{0,1}", meeting_times[0])
-            self.meeting_time_start = list(meeting_times[1].split('-')[0])
-            self.meeting_time_start.insert(-2, ":")
-            self.meeting_time_end = list(meeting_times[1].split('-')[1])
-            if ("P" in self.meeting_time_end):  # TODO: Check for morning
-                self.meeting_time_end.insert(-3, ":")
-            else:
-                self.meeting_time_end.insert(-2, ':')
+        parse_meeting_times(self, meeting_times)
 
         # Parse enrollment field to 2 separate JSON numbers
         if len(split_enroll) > 1:
@@ -82,6 +67,27 @@ class Course(object):
         else:
             self.currently_enrolled = 0
             self.enrollment_limit = 0
+
+        def parse_meeting_times(self, meeting_times):
+            # Parse meeting times into day arguments, starting time, and ending time
+            if "to be arranged" in meeting_times:
+                self.meeting_days = ["TBD"]
+                self.meeting_time_start = "TBD"
+                self.meeting_time_end = "TBD"
+            else:
+                meeting_times = meeting_times.split(' ')
+                self.meeting_days = re.findall(
+                    "[A-Z][a-z]{0,1}[a-z]{0,1}", meeting_times[0])
+                self.meeting_time_start = list(meeting_times[1].split('-')[0])
+                self.meeting_time_start.insert(-2, ":")
+                self.meeting_time_start = ''.join(self.meeting_time_start)
+                self.meeting_time_end = list(meeting_times[1].split('-')[1])
+                if ("P" in self.meeting_time_end):  # TODO: Check for morning
+                    self.meeting_time_end.insert(-3, ":")
+                    self.meeting_time_end.insert(-1, "M")
+                else:
+                    self.meeting_time_end.insert(-2, ':')
+                self.meeting_time_end = ''.join(self.meeting_time_end)
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
