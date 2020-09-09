@@ -82,7 +82,9 @@ class Course(object):
         elif "Closed" in fields[6]:
             pos = fields[6].index("Closed")
         self.instructor = ' '.join(fields[6][0:pos].split()) \
-            if pos != 0 else 'No instructor assigned'
+            if pos != 0 else fields[6]
+        if len(self.instructor) == 0:
+            self.instructor = 'No instructor assigned.'
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
         self.is_crnc = fields[9]

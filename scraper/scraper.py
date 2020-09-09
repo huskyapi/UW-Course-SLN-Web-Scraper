@@ -4,8 +4,8 @@ import sys
 
 from bs4 import BeautifulSoup
 
-from course import Course
-from utils import create_time_schedule_url, get_html
+from scraper.course import Course
+from scraper.utils import create_time_schedule_url, get_html
 
 
 def get_courses_by_department(campus, quarter, year, department_code,
