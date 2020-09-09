@@ -14,8 +14,11 @@ class ComplexEncoder(json.JSONEncoder):
 
 class Course(object):
     def parse_meeting_times(self, meeting_times):
-        # Parse meeting times into following:
-        # day arguments, starting time, and ending time
+        """
+            Parse meeting times into following:
+            day arguments, starting time, and ending time
+            Input: meeting_times string fed from __init__
+        """
         if "to be arranged" in meeting_times:
             self.meeting_days = ["TBD"]
             self.meeting_time_start = "TBD"
@@ -28,7 +31,7 @@ class Course(object):
             self.meeting_time_start.insert(-2, ":")
             self.meeting_time_start = ''.join(self.meeting_time_start)
             self.meeting_time_end = list(meeting_times[1].split('-')[1])
-            if ("P" in self.meeting_time_end):  # TODO: Check for morning
+            if "P" in self.meeting_time_end:  # TODO: Check for morning
                 self.meeting_time_end.insert(-3, ":")
                 self.meeting_time_end.insert(-1, "M")
             else:
@@ -36,9 +39,13 @@ class Course(object):
             self.meeting_time_end = ''.join(self.meeting_time_end)
 
     def parse_enrollment(self, split_enroll):
+        """
+        Parse enrollment field to 2 separate JSON numbers
+        Input: split_enroll string array fed from __init__
+        Output: currently_enrolled: 15, enrollment_limit: 30
+        """
         enrollment_codes = ['E', 'C']
 
-        # Parse enrollment field to 2 separate JSON numbers
         if len(split_enroll) > 1:
             for code in enrollment_codes:
                 split_enroll[1] = split_enroll[1].replace(code, "")
