@@ -4,17 +4,17 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.1",
 	"configurations": [{
-			"name": "Python: Current File",
-			"type": "python",
-			"request": "launch",
-			"program": "${file}",
-			"console": "integratedTerminal"
-		},
-		{
 			"name": "Run Main",
 			"type": "python",
 			"request": "launch",
 			"program": "${workspaceFolder}/src/main.py",
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Python: Current File",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
 			"console": "integratedTerminal"
 		}
 	]

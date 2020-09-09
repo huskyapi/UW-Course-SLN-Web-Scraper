@@ -41,7 +41,7 @@ class Course(object):
             fields[1].replace(">", "")
         self.section_id = fields[2]
         self.credits = fields[3]
-        self.meeting_times = ' '.join(fields[4].split())
+        meeting_times = ' '.join(fields[4].split())
         self.room = fields[5]
         pos = 0
         if "Open" in fields[6]:
@@ -55,6 +55,23 @@ class Course(object):
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = fields[11]
+
+        # Parse meeting times into day arguments, starting time, and ending time
+        if "to be arranged" in meeting_times:
+            self.meeting_days = ["TBA"]
+            self.meeting_time_start = "TBA"
+            self.meeting_time_end = "TBA"
+        else:
+            meeting_times = meeting_times.split(' ')
+            self.meeting_days = re.findall(
+                "[A-Z][a-z]{0,1}[a-z]{0,1}", meeting_times[0])
+            self.meeting_time_start = list(meeting_times[1].split('-')[0])
+            self.meeting_time_start.insert(-2, ":")
+            self.meeting_time_end = list(meeting_times[1].split('-')[1])
+            if ("P" in self.meeting_time_end):  # TODO: Check for morning
+                self.meeting_time_end.insert(-3, ":")
+            else:
+                self.meeting_time_end.insert(-2, ':')
 
         # Parse enrollment field to 2 separate JSON numbers
         if len(split_enroll) > 1:
