@@ -14,7 +14,8 @@ class ComplexEncoder(json.JSONEncoder):
 
 class Course(object):
     def parse_meeting_times(self, meeting_times):
-            # Parse meeting times into day arguments, starting time, and ending time
+        # Parse meeting times into following:
+        # day arguments, starting time, and ending time
         if "to be arranged" in meeting_times:
             self.meeting_days = ["TBD"]
             self.meeting_time_start = "TBD"
