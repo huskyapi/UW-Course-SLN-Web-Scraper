@@ -158,7 +158,8 @@ class Course(object):
 
         if instructor.status_code > 200 or \
                 '"error":"Bad request"' in instructor.text:
-            instructor = InstructorFallback(first_name, middle_name, last_name)
+            instructor = InstructorFallback(
+                first_name, middle_name, last_name).__dict__
         else:
             instructor = instructor.json()
 
