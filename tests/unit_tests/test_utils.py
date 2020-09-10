@@ -5,7 +5,9 @@ from scraper.utils import validate_campus_name, validate_quarter_name, \
     validate_course_name, create_time_schedule_url, is_url, get_html
 
 test_data = {
-    'quarters': [('autumn2019', 'AUT2019'), ('SPR2019', 'SPR2019'), ('WINTER2020', 'WIN2020')],
+    'quarters': [('autumn2019', 'AUT2019'),
+                 ('SPR2019', 'SPR2019'),
+                 ('WINTER2020', 'WIN2020')],
     'courses': ['INFO200', 'B PHYS121'],
     'campuses': ['Bothell', 'Tacoma', 'Seattle'],
     'urls': [
