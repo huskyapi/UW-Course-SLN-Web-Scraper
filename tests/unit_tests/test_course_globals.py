@@ -1,6 +1,6 @@
 import pytest
 
-
+# flake8: noqa
 @pytest.fixture(scope="module")
 def global_data():
     return {
