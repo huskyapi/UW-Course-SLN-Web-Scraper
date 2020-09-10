@@ -21,6 +21,70 @@ class InstructorFallback(object):
 
 
 class Course(object):
+    def __init__(self, header_row, main_row, quarter, year):
+        self.parse_header_row(header_row, quarter, year)
+        tokens = main_row.partition('\r\n')
+        self.description = " ".join(tokens[2].split())
+
+        fields = [tokens[0]
+                  [start:end].strip()
+                  for start, end in zip(LENGTHS, LENGTHS[1:])]
+        self.parse_main_row(tokens, fields)
+
+    def parse_header_row(self, header_row, quarter, year):
+        """
+        Parses the header row text of a course section table of
+        the UW Time Schedule.
+        """
+        header_row = re.sub("Prerequisites(.*)$", "", header_row)
+        gen_ed = re.search("\\((.*?)\\)", header_row)
+        if gen_ed:
+            gen_ed = gen_ed.group(0)[1:][:-1]
+        else:
+            gen_ed = ""
+
+        header_row = re.sub("\\((.*)$", "", header_row)
+        code, number, name = header_row.split(maxsplit=2)
+        self.name = name
+        self.code = code
+        self.number = number
+        self.quarter = quarter
+        self.year = year
+        self.gen_ed_marker = gen_ed
+
+    def parse_main_row(self, tokens, fields):
+        """
+        Parses the main row text of a course section table
+        from the UW Time Schedule.
+        """
+        self.is_restricted = fields[0]
+        self.sln = fields[1] if ">" not in fields[1] else \
+            fields[1].replace(">", "")
+        self.section_id = fields[2]
+        self.credits = fields[3]
+        meeting_times = ' '.join(fields[4].split())
+        self.parse_meeting_times(meeting_times)
+
+        self.room = fields[5]
+        pos = 0
+        if "Open" in fields[6]:
+            pos = fields[6].index("Open")
+        elif "Closed" in fields[6]:
+            pos = fields[6].index("Closed")
+        self.instructor = ' '.join(fields[6][0:pos].split()) \
+            if pos != 0 else fields[6]
+        if len(self.instructor) == 0:
+            self.instructor = 'No instructor assigned.'
+        else:
+            self.instructor = self.retrieve_instructor_object(
+                self.instructor)
+        self.status = fields[7]
+        split_enroll = fields[8].replace(" ", "").split("/")
+        self.parse_enrollment(split_enroll)
+        self.is_crnc = fields[9]
+        self.course_fee = fields[10]
+        self.special_type = fields[11]
+
     def parse_meeting_times(self, meeting_times):
         """
             Parse meeting times into following:
@@ -41,7 +105,7 @@ class Course(object):
             self.meeting_time_end = list(meeting_times[1].split('-')[1])
             if "P" in self.meeting_time_end:  # TODO: Check for morning
                 self.meeting_time_end.insert(-3, ":")
-                self.meeting_time_end.insert(-0, "M")
+                self.meeting_time_end.append("M")
             else:
                 self.meeting_time_end.insert(-2, ':')
             self.meeting_time_end = ''.join(self.meeting_time_end)
@@ -75,77 +139,30 @@ class Course(object):
         instructor_name.replace(' ', '%20').replace(',', ' ')
         first_name = instructor_name.split(',')[1].split(' ')[0]
         last_name = instructor_name.split(',')[0]
-        if (len(instructor_name.split(',')[1].split(' ')) > 1):
+        if len(instructor_name.split(',')[1].split(' ')) > 1:
             middle_name = instructor_name.split(',')[1].split(' ')[1]
         else:
             middle_name = ""
 
         # TODO: Enhance performance. Only way to search is by full name ATM.
         instructor = requests.get(
-            'http://www.uwfaculty-lmao.tk/faculty/api/v1/' + first_name + " " + middle_name + "" + last_name)
-        if ('"error":"Bad request"' in instructor.text):
+            'http://www.uwfaculty-lmao.tk/faculty/api/v1/'
+            + first_name + " " + middle_name + "" + last_name)
+        if '"error":"Bad request"' in instructor.text:
             instructor = requests.get(
-                'http://www.uwfaculty-lmao.tk/faculty/api/v1/' + first_name + " " + last_name)
-        if ('"error":"Bad request"' in instructor.text and len(first_name) > 1):
+                'http://www.uwfaculty-lmao.tk/faculty/api/v1/'
+                + first_name + " " + last_name)
+        if '"error":"Bad request"' in instructor.text and len(first_name) > 1:
             instructor = requests.get(
                 'http://www.uwfaculty-lmao.tk/faculty/api/v1/' + first_name)
 
-        if (instructor.status_code > 200 or '"error":"Bad request"' in instructor.text):
+        if instructor.status_code > 200 or \
+                '"error":"Bad request"' in instructor.text:
             instructor = InstructorFallback(first_name, middle_name, last_name)
         else:
             instructor = instructor.json()
 
         return instructor
-
-    def __init__(self, preface, section, quarter, year):
-        preface = re.sub("Prerequisites(.*)$", "", preface)
-        gen_ed = re.search("\\((.*?)\\)", preface)
-        if gen_ed:
-            gen_ed = gen_ed.group(0)[1:][:-1]
-        else:
-            gen_ed = ""
-
-        preface = re.sub("\\((.*)$", "", preface)
-        code, number, name = preface.split(maxsplit=2)
-        self.name = name
-        self.code = code
-        self.number = number
-        self.quarter = quarter
-        self.year = year
-        self.gen_ed_marker = gen_ed
-        tokens = section.partition('\r\n')
-        fields = [tokens[0]
-                  [start:end].strip()
-                  for start, end in zip(LENGTHS, LENGTHS[1:])]
-
-        self.description = " ".join(tokens[2].split())
-        self.is_restricted = fields[0]
-        self.sln = fields[1] if ">" not in fields[1] else \
-            fields[1].replace(">", "")
-        self.section_id = fields[2]
-        self.credits = fields[3]
-        meeting_times = ' '.join(fields[4].split())
-        self.room = fields[5]
-        pos = 0
-        if "Open" in fields[6]:
-            pos = fields[6].index("Open")
-        elif "Closed" in fields[6]:
-            pos = fields[6].index("Closed")
-        self.instructor = ' '.join(fields[6][0:pos].split()) \
-            if pos != 0 else fields[6]
-        if len(self.instructor) == 0:
-            self.instructor = 'No instructor assigned.'
-        else:
-            self.instructor = self.retrieve_instructor_object(
-                self.instructor).__dict__
-        self.status = fields[7]
-        split_enroll = fields[8].replace(" ", "").split("/")
-        self.is_crnc = fields[9]
-        self.course_fee = fields[10]
-        self.special_type = fields[11]
-
-        self.parse_meeting_times(meeting_times)
-        self.parse_enrollment(split_enroll)
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
