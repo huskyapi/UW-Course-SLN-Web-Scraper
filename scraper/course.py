@@ -1,5 +1,6 @@
 import json
 import re
+import requests
 
 LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 9, 9, 5, 6)
 LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 101, 110, 115, 121]
@@ -10,6 +11,13 @@ class ComplexEncoder(json.JSONEncoder):
         if isinstance(obj, Course):
             return obj.__dict__
         return json.JSONEncoder(self, obj)
+
+
+class InstructorFallback(object):
+    def __init__(self, first_name, middle_name, last_name):
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
 
 
 class Course(object):
@@ -67,6 +75,9 @@ class Course(object):
             if pos != 0 else fields[6]
         if len(self.instructor) == 0:
             self.instructor = 'No instructor assigned.'
+        else:
+            self.instructor = self.retrieve_instructor_object(
+                self.instructor)
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
         self.parse_enrollment(split_enroll)
@@ -116,6 +127,42 @@ class Course(object):
             self.currently_enrolled = 0
             self.enrollment_limit = 0
 
+    def retrieve_instructor_object(self, instructor_name):
+        """
+        Parse a teacher's name, make a get request
+        to the UW Faculty/Staff API, and retrieve an
+        extended object of the teacher's information.
+
+        API Info: http://www.uwfaculty-lmao.tk/
+        """
+
+        instructor_name.replace(' ', '%20').replace(',', ' ')
+        first_name = instructor_name.split(',')[1].split(' ')[0]
+        last_name = instructor_name.split(',')[0]
+        if len(instructor_name.split(',')[1].split(' ')) > 1:
+            middle_name = instructor_name.split(',')[1].split(' ')[1]
+        else:
+            middle_name = ""
+
+        # TODO: Enhance performance. Only way to search is by full name ATM.
+        instructor = requests.get(
+            'http://www.uwfaculty-lmao.tk/faculty/api/v1/'
+            + first_name + " " + middle_name + "" + last_name)
+        if '"error":"Bad request"' in instructor.text:
+            instructor = requests.get(
+                'http://www.uwfaculty-lmao.tk/faculty/api/v1/'
+                + first_name + " " + last_name)
+        if '"error":"Bad request"' in instructor.text and len(first_name) > 1:
+            instructor = requests.get(
+                'http://www.uwfaculty-lmao.tk/faculty/api/v1/' + first_name)
+
+        if instructor.status_code > 200 or \
+                '"error":"Bad request"' in instructor.text:
+            instructor = InstructorFallback(first_name, middle_name, last_name)
+        else:
+            instructor = instructor.json()
+
+        return instructor
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
