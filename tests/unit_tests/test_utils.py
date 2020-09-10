@@ -4,6 +4,17 @@ import pytest
 from scraper.utils import validate_campus_name, validate_quarter_name, \
     validate_course_name, create_time_schedule_url, is_url, get_html
 
+test_data = {
+    'quarters': [('autumn2019', 'AUT2019'), ('SPR2019', 'SPR2019'), ('WINTER2020', 'WIN2020')],
+    'courses': ['INFO200', 'B PHYS121'],
+    'campuses': ['Bothell', 'Tacoma', 'Seattle'],
+    'urls': [
+        "https://www.google.com",
+        "http://example.com",
+        "https://www.washington.edu/students/timeschd/"
+    ]
+}
+
 
 def test_get_html():
     assert get_html("") is None
@@ -13,10 +24,9 @@ def test_get_html():
     ) is not None
 
 
-def test_is_url():
-    assert is_url("https://www.google.com")
-    assert is_url("http://example.com")
-    assert is_url("https://www.washington.edu/students/timeschd/")
+@pytest.mark.parametrize("url", test_data['urls'])
+def test_is_url(url):
+    assert is_url(url)
 
 
 def test_create_time_schedule_url():
@@ -31,21 +41,22 @@ def test_create_time_schedule_url():
     ) == "https://www.washington.edu/students/timeschd/T/AUT2020/tednur.html"
 
 
-def test_validate_campus_name():
+@pytest.mark.parametrize("campus", test_data['campuses'])
+def test_validate_campus_name(campus):
+    validate_campus_name(campus)
     with pytest.raises(argparse.ArgumentTypeError):
         validate_campus_name("Test")
 
 
-def test_validate_quarter_name():
-    assert validate_quarter_name('autumn 2019') == 'AUT2019'
-    assert validate_quarter_name('SPR2019') == 'SPR2019'
-    assert validate_quarter_name('WINTER2020') == 'WIN2020'
+@pytest.mark.parametrize("quarter, expected", test_data['quarters'])
+def test_validate_quarter_name(quarter, expected):
+    assert validate_quarter_name(quarter) == expected
     with pytest.raises(argparse.ArgumentTypeError):
         validate_quarter_name("Test")
 
 
-def test_validate_course_name():
-    validate_course_name('INFO200')
-    validate_course_name('B PHYS121')
+@pytest.mark.parametrize("course", test_data['courses'])
+def test_validate_course_name(course):
+    validate_course_name(course)
     with pytest.raises(argparse.ArgumentTypeError):
         validate_course_name("Test")
