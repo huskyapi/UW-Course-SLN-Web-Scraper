@@ -187,14 +187,17 @@ class Course(object):
         """
 
         if "*    *" in location_full or len(location_full) == 0:
-            room = Room("To Be Arranged", "To Be Arranged")
+            return "To Be Arranged"
         else:
-            location_split = location_full.split(' ')
-            while("" in location_split):
-                location_split.remove("")
-            room = Room(location_split[0].strip(), location_split[1].strip())
-
-        return room.__dict__
+            location_split = re.sub(
+                r'[*]', '', location_full).strip().split(' ')
+            if len(location_split) > 1:
+                while("" in location_split):
+                    location_split.remove("")
+                return Room(location_split[0].strip(),
+                            location_split[1].strip()).__dict__
+            else:
+                return location_split[0]
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
