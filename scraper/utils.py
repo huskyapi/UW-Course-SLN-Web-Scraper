@@ -4,8 +4,7 @@ from collections import namedtuple
 from contextlib import closing
 from requests import get, Response
 from requests.utils import requote_uri
-from requests.exceptions import RequestException, HTTPError, \
-    ConnectionError, Timeout
+from requests.exceptions import RequestException, HTTPError, Timeout
 
 TIME_SCHEDULE_URL = "https://www.washington.edu/students/timeschd"
 CourseName = namedtuple('CourseName', 'code number name')
@@ -48,7 +47,7 @@ def is_url(url):
     """
     regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # noqa: E501
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
         r'localhost|'  # localhost...
         r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
         r'(?::\d+)?'  # optional port
@@ -78,14 +77,12 @@ def validate_campus_name(string):
         Raises an ArgumentTypeError if it is not.
     """
     campus = string.lower()
-    if (campus != 'tacoma') and (campus != 'seattle') \
-            and (campus != 'bothell'):
+    if campus not in ('tacoma', 'seattle', 'bothell'):
         msg = f'\"{campus}\" is not a valid UW campus name.'
         raise argparse.ArgumentTypeError(msg)
     if campus in ('tacoma', 'bothell'):
         return f'{campus[:1].upper()}/'
-    else:
-        return ''
+    return ''
 
 
 def validate_course_name(string):
@@ -97,10 +94,9 @@ def validate_course_name(string):
     number = re.sub(r"[^\d+]", '', string)
     name = f'{code}{number}'
 
-    r = re.compile(r'^[a-zA-Z ]{3,6}\d{3}$')
-    if not r.match(name):
-        msg = f'\"{string}\" is not a valid course name. ' \
-              f'(i.e, astbio300, INFO200, B PHYS 121)'
+    reg = re.compile(r'^[a-zA-Z ]{3,6}\d{3}$')
+    if not reg.match(name):
+        msg = f'\"{string}\" is not a valid course name. (i.e, INFO200, B PHYS 121)'
         raise argparse.ArgumentTypeError(msg)
 
     return CourseName(code, number, name)
@@ -114,8 +110,8 @@ def validate_quarter_name(string):
     raw_string = string.replace(" ", "")
     name = f'{raw_string[:3].upper()}{raw_string[-4:]}'
 
-    r = re.compile(r'^(AUT|WIN|SUM|SPR)\d{4}$')
-    if not r.match(name):
+    reg = re.compile(r'^(AUT|WIN|SUM|SPR)\d{4}$')
+    if not reg.match(name):
         msg = f'\"{string}\" is not a valid quarter name. ' \
               f'(i.e, autumn 2019, aut2019, spr2000, WIN 2014, SUM2005)'
         raise argparse.ArgumentTypeError(msg)

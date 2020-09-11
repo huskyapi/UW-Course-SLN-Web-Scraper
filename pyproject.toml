@@ -32,6 +32,7 @@ pytest-mock = "^3.3.1"
 mock = "^4.0.2"
 flake8 = "^3.8.3"
 pylint = "^2.6.0"
+wrapt = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
 
