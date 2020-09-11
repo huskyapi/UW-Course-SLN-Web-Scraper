@@ -1,4 +1,4 @@
-from scraper.scraper import get_courses_by_department, get_course
+from scraper.scraper import get_courses_by_department
 
 SEASONS = ["AUTUMN", "WINTER", "SPRING", "SUMMER"]
 """
