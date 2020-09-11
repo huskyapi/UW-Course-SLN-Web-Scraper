@@ -14,10 +14,27 @@ class ComplexEncoder(json.JSONEncoder):
 
 
 class InstructorFallback(object):
+    """
+        Created when the Faculty API fails to retrieve
+        teacher information.
+    """
+
     def __init__(self, first_name, middle_name, last_name):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
+
+
+class Room(object):
+    """
+        Organizes room information into following:
+        building code, and room number.
+        Ex. 'UW1' and '020'
+    """
+
+    def __init__(self, building_code, room_number):
+        self.building_code = building_code
+        self.room_number = room_number
 
 
 class Course(object):
@@ -65,7 +82,7 @@ class Course(object):
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
 
-        self.room = fields[5]
+        self.room = self.parse_location(fields[5])
         pos = 0
         if "Open" in fields[6]:
             pos = fields[6].index("Open")
@@ -161,6 +178,23 @@ class Course(object):
             instructor = instructor.json()
 
         return instructor
+
+    def parse_location(self, location_full):
+        """
+        Parse a course's room into
+        a building code and room number.
+        If there is none, "To Be Arranged" is added.
+        """
+
+        if "*    *" in location_full or len(location_full) == 0:
+            room = Room("To Be Arranged", "To Be Arranged")
+        else:
+            location_split = location_full.split(' ')
+            while("" in location_split):
+                location_split.remove("")
+            room = Room(location_split[0].strip(), location_split[1].strip())
+
+        return room.__dict__
 
     def serialize(self):
         return json.dumps(self, cls=ComplexEncoder)
