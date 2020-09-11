@@ -34,7 +34,8 @@ def get_courses_by_department(campus, quarter, year, department_code,
               file=sys.syserr)
 
 
-def get_course(campus, quarter, year, department_code, course_name, filename = None):
+def get_course(campus, quarter, year, department_code,
+               course_name, filename=None):
     """
     Scraps the course that corresponds with the given campus,
     quarter, year, and course information.
