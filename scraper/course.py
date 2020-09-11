@@ -190,12 +190,14 @@ class Course(object):
             return "To Be Arranged"
         else:
             print(location_full)
-            location_split = re.sub(r'[*]', '', location_full).strip().split(' ')
+            location_split = re.sub(r'[*]', '',
+                                    location_full).strip().split(' ')
             print(location_split)
-            if len(location_split)>1:
-                while("" in location_split):
+            if len(location_split) > 1:
+                while "" in location_split:
                     location_split.remove("")
-                return Room(location_split[0].strip(), location_split[1].strip()).__dict__
+                return Room(location_split[0].strip(),
+                            location_split[1].strip()).__dict__
             else:
                 return location_split[0]
 
