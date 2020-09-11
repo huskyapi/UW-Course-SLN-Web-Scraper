@@ -5,11 +5,14 @@ from the UW Time Schedule.
 """
 
 import sys
+import logging
 
 from bs4 import BeautifulSoup
 
 from scraper.course import Course
 from scraper.utils import create_time_schedule_url, get_html
+
+log = logging.getLogger(__name__)
 
 
 def get_courses_by_department(campus, quarter, year, dept_code, filename=None, url=None):
@@ -21,15 +24,17 @@ def get_courses_by_department(campus, quarter, year, dept_code, filename=None, u
         url: URL from which to scrap courses.
     """
     if not url:
+        log.info(f"Creating time schedule url for {quarter}, {year}, and {dept_code}")
         url = create_time_schedule_url(campus, f"{quarter}{year}", dept_code)
+    log.info("Retrieving HTML response..")
     response = get_html(url)
     if response is not None:
+        log.info("HTML response successfully queried.")
         soup = BeautifulSoup(response, "html.parser")
-
         courses = soup.find_all("table")
+        log.info(f"Scraping courses for {quarter}, {year}, and {dept_code}")
         for course in courses:
             scrap_course(course, f"a[name^=\"{dept_code.lower()}\"]", quarter, year, filename)
-
     else:
         print(f"No time schedule available for {campus}, {quarter}", file=sys.stderr)
 
@@ -67,7 +72,10 @@ def scrap_course(table, selector, quarter, year, filename=None):
         course_info = table.find_next_sibling("table")
         while course_info:
             if not course_info.has_attr("bgcolor") or course_info["bgcolor"] == "#d3d3d3":
+                log.info(f"Header row: \"{table.get_text()[1:]}\"")
+                log.info(f"Main row: \"{course_info.get_text()}\"")
                 course_sec = Course(table.get_text()[1:], course_info.get_text(), quarter, year)
+                log.info(f"{course_sec.serialize()}")
                 if filename:
                     with open(filename, "a") as file:
                         file.write(f"{course_sec.serialize()}\n")

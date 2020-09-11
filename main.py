@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 
+import logging
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 from scraper.scraper import get_courses_by_department
+
+logging.basicConfig(
+    format='%(asctime)s,%(msecs)d %(levelname)-8s '
+           '[%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S',
+    level=logging.DEBUG)
+
+log = logging.getLogger(__name__)
 
 SEASONS = ["AUTUMN", "WINTER", "SPRING", "SUMMER"]
 YEARS = ["2003", "2004", "2005", "2006", "2007", "2008",
@@ -10,9 +20,9 @@ DEPARTMENT = "CSS"
 CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
 
-print("Starting web scraper...")
+log.info("Starting web scraper...")
 for s in SEASONS:
     for y in YEARS:
-        print(f"\tGetting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
+        log.info(f"Getting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
         get_courses_by_department(CAMPUS, s, y, DEPARTMENT, OUTPUT_FILE)
-print(f"Scraping complete! See {OUTPUT_FILE} for results.")
+log.info("Scraping complete! See {OUTPUT_FILE} for results.")

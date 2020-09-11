@@ -23,10 +23,16 @@ def retrieve_instructor_object(instructor_name):
     """
 
     instructor_name.replace(' ', '%20').replace(',', ' ')
-    first_name = instructor_name.split(',')[1].split(' ')[0]
-    last_name = instructor_name.split(',')[0]
-    if len(instructor_name.split(',')[1].split(' ')) > 1:
-        middle_name = instructor_name.split(',')[1].split(' ')[1]
+    instructor_name_tokens = instructor_name.split(',')
+    if len(instructor_name_tokens) > 1:
+        first_name = instructor_name_tokens[1].split(' ')
+    else:
+        return ""
+    if len(first_name) > 1:
+        first_name = instructor_name_tokens[0]
+    last_name = instructor_name_tokens[0]
+    if len(first_name) > 1:
+        middle_name = first_name[1]
     else:
         middle_name = ""
 
