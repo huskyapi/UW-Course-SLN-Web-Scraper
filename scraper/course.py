@@ -189,8 +189,9 @@ class Course(object):
         if "*    *" in location_full or len(location_full) == 0:
             return "To Be Arranged"
         else:
-            location_split = re.sub(r'[*]', '', location_full).strip().split(' ')
-            if len(location_split)>1:
+            location_split = re.sub(
+                r'[*]', '', location_full).strip().split(' ')
+            if len(location_split) > 1:
                 while("" in location_split):
                     location_split.remove("")
                 return Room(location_split[0].strip(),
