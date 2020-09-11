@@ -34,7 +34,7 @@ def get_courses_by_department(campus, quarter, year, department_code,
               file=sys.syserr)
 
 
-def get_course(campus, quarter, year, department_code, course_name):
+def get_course(campus, quarter, year, department_code, course_name, filename = None):
     """
     Scraps the course that corresponds with the given campus,
     quarter, year, and course information.
@@ -50,8 +50,7 @@ def get_course(campus, quarter, year, department_code, course_name):
         courses = soup.find_all("table")
         for crs in courses:
             scrap_course(crs, f"a[name=\"{course_name}\"]",
-                         quarter, year, None)
-            break
+                         quarter, year, filename)
     else:
         print(f"No time schedule available for {campus}, {quarter}")
 
@@ -71,9 +70,9 @@ def scrap_course(table, selector, quarter, year, filename=None):
                     course_info["bgcolor"] == "#d3d3d3":
                 course_section = Course(table.get_text()[1:],
                                         course_info.get_text(), quarter, year)
-                print("header_row: ", "\"", table.get_text()[1:], "\"")
-                print("section: ", "\"", course_info.get_text(), "\"")
-                print(course_section.serialize())
+                #print("header_row: ", "\"", table.get_text()[1:], "\"")
+                #print("section: ", "\"", course_info.get_text(), "\"")
+                #print(course_section.serialize())
                 if filename:
                     with open(filename, "a") as file:
                         file.write(f"{course_section.serialize()}\n")
