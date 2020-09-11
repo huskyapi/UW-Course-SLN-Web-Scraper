@@ -152,9 +152,6 @@ class Course(object):
             instructor = requests.get(
                 'http://www.uwfaculty-lmao.tk/faculty/api/v1/'
                 + first_name + " " + last_name)
-        if '"error":"Bad request"' in instructor.text and len(first_name) > 1:
-            instructor = requests.get(
-                'http://www.uwfaculty-lmao.tk/faculty/api/v1/' + first_name)
 
         if instructor.status_code > 200 or \
                 '"error":"Bad request"' in instructor.text:
