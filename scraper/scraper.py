@@ -70,9 +70,9 @@ def scrap_course(table, selector, quarter, year, filename=None):
                     course_info["bgcolor"] == "#d3d3d3":
                 course_section = Course(table.get_text()[1:],
                                         course_info.get_text(), quarter, year)
-                #print("header_row: ", "\"", table.get_text()[1:], "\"")
-                #print("section: ", "\"", course_info.get_text(), "\"")
-                #print(course_section.serialize())
+                print("header_row: ", "\"", table.get_text()[1:], "\"")
+                print("section: ", "\"", course_info.get_text(), "\"")
+                print(course_section.serialize())
                 if filename:
                     with open(filename, "a") as file:
                         file.write(f"{course_section.serialize()}\n")

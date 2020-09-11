@@ -12,7 +12,8 @@ CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
 
 print("Starting web scraper...")
-get_course(CAMPUS, "AUTUMN", "2020", DEPARTMENT, "css385", OUTPUT_FILE)
+get_course("Bothell", "AUTUMN", "2020", "CSS", "css385", "css385.json")
+get_course("Bothell", "AUTUMN", "2020", "CSS", "css430", "css430.json")
 """
 for s in SEASONS:
     for y in YEARS:
