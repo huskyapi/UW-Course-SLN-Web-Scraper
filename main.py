@@ -12,12 +12,8 @@ CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
 
 print("Starting web scraper...")
-get_course("Bothell", "AUTUMN", "2020", "CSS", "css385", "css385.json")
-get_course("Bothell", "AUTUMN", "2020", "CSS", "css430", "css430.json")
-"""
 for s in SEASONS:
     for y in YEARS:
         print(f"\tGetting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
         get_courses_by_department(CAMPUS, s, y, DEPARTMENT, OUTPUT_FILE)
-"""
 print(f"Scraping complete! See {OUTPUT_FILE} for results.")

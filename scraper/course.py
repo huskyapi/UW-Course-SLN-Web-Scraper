@@ -189,9 +189,7 @@ class Course(object):
         if "*    *" in location_full or len(location_full) == 0:
             return "To Be Arranged"
         else:
-            print(location_full)
             location_split = re.sub(r'[*]', '', location_full).strip().split(' ')
-            print(location_split)
             if len(location_split)>1:
                 while("" in location_split):
                     location_split.remove("")
