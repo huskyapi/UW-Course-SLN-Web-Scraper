@@ -67,6 +67,7 @@ class Course():
         self.quarter, self.year, = quarter, year
 
     def parse_main_row(self, fields):
+        print(fields)
         """
         Parses the main row text of a course section table
         from the UW Time Schedule.
@@ -89,6 +90,15 @@ class Course():
             self.instructor = 'No instructor assigned.'
         else:
             self.instructor = retrieve_instructor_object(self.instructor)
+
+        if "" in fields[7]:
+            split_nit_combo = fields.pop(6).split()
+            split_nit_combo.reverse()
+            for attr in split_nit_combo:
+                fields.insert(6, attr)
+            fields[8] = fields[8] + fields[9]
+            fields.pop(9)
+
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
         self.parse_enrollment(split_enroll)
@@ -131,7 +141,10 @@ class Course():
         if len(split_enroll) > 1:
             for code in enrollment_codes:
                 split_enroll[1] = split_enroll[1].replace(code, "")
-            self.currently_enrolled = int(split_enroll[0])
+            try:
+                self.currently_enrolled = int(split_enroll[0])
+            except ValueError:
+                return
             self.enrollment_limit = int(split_enroll[1])
         else:
             self.currently_enrolled = 0
