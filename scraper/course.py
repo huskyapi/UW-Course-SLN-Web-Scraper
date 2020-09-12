@@ -3,6 +3,7 @@ import re
 
 from scraper.instructor import retrieve_instructor_object
 from scraper.room import parse_location
+from scraper.special import parse_special_types
 
 LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 9, 9, 5, 6)
 LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 101, 110, 115, 121]
@@ -93,7 +94,7 @@ class Course():
         self.parse_enrollment(split_enroll)
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
-        self.special_type = fields[11]
+        self.special_type = parse_special_types(fields[11])
 
     def parse_meeting_times(self, meeting_times):
         """
