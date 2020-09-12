@@ -1,8 +1,9 @@
 class SpecialTypes(object):
     """
     Created when a class has special types.
-    Types assigned according to built
-    in dictionary
+    Types assigned according to special types
+    found in the UW Time Schedule, which are
+    stored in a dictionary
     """
 
     def __init__(self, special_types):
@@ -17,7 +18,7 @@ class SpecialTypes(object):
             'S': "service_learning",
             'W': "writing_section",
             '%': "new_course",
-            '#': "restriced_financial_aid"
+            '#': "restricted_financial_aid"
         }
         split_types = [char for char in special_types]
         for type_char in split_types:
@@ -31,6 +32,6 @@ def parse_special_types(special_type_full):
     If there are none, "None" is added
     """
     if len(special_type_full) == 0:
-        return "None"
+        return {}
     else:
         return SpecialTypes(special_type_full).__dict__
