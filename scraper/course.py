@@ -5,8 +5,8 @@ from scraper.instructor import retrieve_instructor_object
 from scraper.room import parse_location
 from scraper.special import parse_special_types
 
-LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 9, 9, 5, 6)
-LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 101, 110, 115, 121]
+LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 8, 9, 5, 6)
+LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 100, 110, 115, 121]
 
 
 class ComplexEncoder(json.JSONEncoder):
@@ -143,9 +143,9 @@ class Course():
                 split_enroll[1] = split_enroll[1].replace(code, "")
             try:
                 self.currently_enrolled = int(split_enroll[0])
+                self.enrollment_limit = int(split_enroll[1])
             except ValueError:
                 return
-            self.enrollment_limit = int(split_enroll[1])
         else:
             self.currently_enrolled = 0
             self.enrollment_limit = 0
