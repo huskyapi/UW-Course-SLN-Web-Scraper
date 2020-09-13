@@ -91,7 +91,6 @@ class Course():
         else:
             self.lower_credit_limit = fields[3]
             self.upper_credit_limit = None
-        #print(self.lower_credit_limit, self.upper_credit_limit)
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
 
