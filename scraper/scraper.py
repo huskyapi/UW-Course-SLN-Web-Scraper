@@ -84,4 +84,3 @@ def scrap_course(table, selector, quarter, year, filename=None):
                 course_info = course_info.find_next_sibling("table")
             else:
                 break
-            
