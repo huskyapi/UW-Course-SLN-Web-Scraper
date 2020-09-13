@@ -101,7 +101,7 @@ class Course():
         """
         if "" in fields[7] or "CR/NC" in fields[7]:
             split_nit_combo = fields.pop(6).split()
-            if split_nit_combo[1] is "" and len(split_nit_combo) > 2:
+            if split_nit_combo[1] == "" and len(split_nit_combo) > 2:
                 # Splits names like "LUFFY MONKEY D."
                 split_nit_combo[0] = split_nit_combo[0] + split_nit_combo[2]
                 split_nit_combo.remove(split_nit_combo[1])
