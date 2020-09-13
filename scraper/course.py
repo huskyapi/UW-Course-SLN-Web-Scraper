@@ -40,7 +40,7 @@ class Course():
         self.currently_enrolled = ""
         self.instructor = ""
         self.status = ""
-        self.is_crnc = ""
+        self.is_crnc = False
         self.course_fee = ""
         self.special_type = ""
 
@@ -91,23 +91,73 @@ class Course():
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
 
+        # Checks if there's a 'status' inside the field where it's usually in
+
         self.room = parse_location(fields[5])
+
         pos = 0
         if "Open" in fields[6]:
             pos = fields[6].index("Open")
         elif "Closed" in fields[6]:
             pos = fields[6].index("Closed")
+
         self.instructor = ' '.join(fields[6][0:pos].split()) if pos != 0 else fields[6]
         if len(self.instructor) == 0:
             self.instructor = 'No instructor assigned.'
         else:
             self.instructor = retrieve_instructor_object(self.instructor)
+
+        """
+            Splits fields with info in the format: "SHOOPA,M    Closed    1/ 42'
+            To: ["SHOOPA, M", Closed, and "1/  42"]
+            and appends them in the right order of 'fields'
+        """
+        if "" in fields[7] or "CR/NC" in fields[7]:
+            split_nit_combo = fields.pop(6).split()
+            if split_nit_combo[1] == "" and len(split_nit_combo) > 2:
+                # Splits names like "LUFFY MONKEY D."
+                split_nit_combo[0] = split_nit_combo[0] + split_nit_combo[2]
+                split_nit_combo.remove(split_nit_combo[1])
+                split_nit_combo.remove(split_nit_combo[1])
+            split_nit_combo.reverse()
+            for attr in split_nit_combo:
+                fields.insert(6, attr)
+            fields[8] = fields[8] + fields[9]
+            fields.pop(9)
+            if not self.status_in_right_field(fields, 7):
+                fields.insert(7, "")
+
         self.status = fields[7]
         split_enroll = fields[8].replace(" ", "").split("/")
+        self.split_joined_enroll_crnr(fields)
         self.parse_enrollment(split_enroll)
-        self.is_crnc = fields[9]
+        self.is_crnc = self.check_for_crnc(fields)
         self.course_fee = fields[10]
-        self.special_type = parse_special_types(fields[11])
+        try:
+            self.special_type = parse_special_types(fields[11])
+        except IndexError:
+            self.special_type = ""
+
+    def status_in_right_field(self, fields, num):
+        return "Open" in fields[num] or "Closed" in fields[num]
+
+    def split_joined_enroll_crnr(self, fields):
+        # Splits fields like " 1/ 42CR/NC"
+        if "CR/NC" in fields[8]:
+            fields[8] = fields[8].replace("CR/NC", "")
+            fields.insert(9, "CR/NC")
+            fields.remove(fields[10])
+
+    def check_for_crnc(self, fields):
+        if "CR/NC" in fields[9]:
+            return True
+
+        # Combines the course fee text in case of no 'CR/NC'.
+        if "$" in fields[9]:
+            fields.insert(9, False)
+            fields[10] = fields[10] + fields[11]
+            fields.remove(fields[11])
+            return False
 
     def parse_meeting_times(self, meeting_times):
         """
@@ -144,8 +194,11 @@ class Course():
         if len(split_enroll) > 1:
             for code in enrollment_codes:
                 split_enroll[1] = split_enroll[1].replace(code, "")
-            self.currently_enrolled = int(split_enroll[0])
-            self.enrollment_limit = int(split_enroll[1])
+            try:
+                self.currently_enrolled = int(split_enroll[0])
+                self.enrollment_limit = int(split_enroll[1])
+            except ValueError:
+                return
         else:
             self.currently_enrolled = 0
             self.enrollment_limit = 0
