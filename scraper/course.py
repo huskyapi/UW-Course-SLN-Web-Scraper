@@ -89,8 +89,7 @@ class Course():
             self.lower_credit_limit = split_credits[0]
             self.upper_credit_limit = split_credits[1]
         else:
-            self.lower_credit_limit = fields[3]
-            self.upper_credit_limit = None
+            self.lower_credit_limit, self.upper_credit_limit = fields[3], None
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
 
