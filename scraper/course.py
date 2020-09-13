@@ -80,9 +80,7 @@ class Course():
         # Credit parsing
         self.is_split_credits = False
         if "-" in fields[3]:
-            split_credits = fields[3].split("-")
-            self.lower_credit_limit = split_credits[0]
-            self.upper_credit_limit = split_credits[1]
+            self.lower_credit_limit, self.upper_credit_limit = fields[3].split("-")
         elif "/" in fields[3]:
             self.is_split_credits = True
             split_credits = fields[3].split("/")
