@@ -5,8 +5,8 @@ from scraper.instructor import retrieve_instructor_object
 from scraper.room import parse_location
 from scraper.special import parse_special_types
 
-LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 8, 9, 5, 6)
-LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 100, 110, 115, 121]
+LIMITS = (7, 6, 3, 8, 18, 14, 27, 9, 9, 9, 5, 6)
+LENGTHS = [0, 7, 13, 16, 24, 42, 56, 83, 92, 101, 110, 115, 121]
 
 
 class ComplexEncoder(json.JSONEncoder):
@@ -67,7 +67,6 @@ class Course():
         self.quarter, self.year, = quarter, year
 
     def parse_main_row(self, fields):
-        print(fields)
         """
         Parses the main row text of a course section table
         from the UW Time Schedule.
@@ -102,6 +101,11 @@ class Course():
         """
         if "" in fields[7] or "CR/NC" in fields[7]:
             split_nit_combo = fields.pop(6).split()
+            if split_nit_combo[1] is "" and len(split_nit_combo) > 2:
+                # Splits names like "LUFFY MONKEY D."
+                split_nit_combo[0] = split_nit_combo[0] + split_nit_combo[2]
+                split_nit_combo.remove(split_nit_combo[1])
+                split_nit_combo.remove(split_nit_combo[1])
             split_nit_combo.reverse()
             for attr in split_nit_combo:
                 fields.insert(6, attr)
