@@ -25,7 +25,7 @@ def retrieve_instructor_object(instructor_name):
     instructor_name.replace(' ', '%20').replace(',', ' ')
     instructor_name_tokens = instructor_name.split(',')
     if len(instructor_name_tokens) > 1:
-        first_name = instructor_name_tokens[1].split(' ')
+        first_name = instructor_name_tokens[1].split(' ')[0]
     else:
         return ""
     if len(first_name) > 1:
