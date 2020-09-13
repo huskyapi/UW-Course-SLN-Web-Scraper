@@ -28,7 +28,10 @@ class Course():
         self.is_restricted = ""
         self.sln = ""
         self.section_id = ""
-        self.credits = ""
+        self.lower_credit_limit = ""
+        self.upper_credit_limit = ""
+        self.is_split_credits = ""
+        self.secondary_section = ""
         self.room = ""
         self.meeting_days = ""
         self.meeting_time_start = ""
@@ -74,7 +77,21 @@ class Course():
         self.is_restricted = fields[0]
         self.sln = fields[1] if ">" not in fields[1] else fields[1].replace(">", "")
         self.section_id = fields[2]
-        self.credits = fields[3]
+        #Credit parsing 
+        self.is_split_credits = False
+        if "-" in fields[3]:
+            split_credits = fields[3].split("-")
+            self.lower_credit_limit = split_credits[0]
+            self.upper_credit_limit = split_credits[1]
+        elif "/" in fields[3]:
+            self.is_split_credits = True
+            split_credits = fields[3].split("/")
+            self.lower_credit_limit = split_credits[0]
+            self.upper_credit_limit = split_credits[1] 
+        else:
+            self.lower_credit_limit = fields[3]
+            self.upper_credit_limit = None
+        #print(self.lower_credit_limit, self.upper_credit_limit)
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
 
@@ -95,6 +112,7 @@ class Course():
         self.is_crnc = fields[9]
         self.course_fee = fields[10]
         self.special_type = parse_special_types(fields[11])
+
 
     def parse_meeting_times(self, meeting_times):
         """

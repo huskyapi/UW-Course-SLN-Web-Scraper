@@ -84,3 +84,28 @@ def scrap_course(table, selector, quarter, year, filename=None):
                 course_info = course_info.find_next_sibling("table")
             else:
                 break
+
+"""
+TODO: Create lower_credit_limit and upper_credit_limit 
+TODO: lower_credit_limit is used when there's only a set credit. upper = null 
+Time Schedule: Credits
+The number of credits or the credit range this section is offered this quarter.
+
+2.5 = 2 1/2 credits
+3/5 = 3 or 5 credits
+3-5 = 3 to 5 credits
+VAR = any whole number of credits from 1 to 25 is allowed
+
+For secondary sections, no credits are listed. Rather, the section type is listed.
+
+CK = Clerkship
+CL = Clinic
+CO = Conference
+IS = Independent Study
+LB = Lab
+LC = Lecture
+PR = Practicum
+QZ = Quiz
+SM = Seminar
+ST = Studio
+"""
