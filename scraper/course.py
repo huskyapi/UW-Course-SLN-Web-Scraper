@@ -42,10 +42,11 @@ class Course():
         self.status = ""
         self.is_crnc = False
         self.course_fee = ""
-        self.special_type = ""
+        self.special_type = {}
 
         self.parse_header_row(header_row, quarter, year)
         tokens = main_row.partition('\r\n')
+        print(tokens)
         self.description = " ".join(tokens[2].split())
 
         fields = [tokens[0]
@@ -134,10 +135,11 @@ class Course():
         self.parse_enrollment(split_enroll)
         self.is_crnc = self.check_for_crnc(fields)
         self.course_fee = fields[10]
+        print(fields)
         try:
             self.special_type = parse_special_types(fields[11])
         except IndexError:
-            self.special_type = ""
+            self.special_type = {}
 
     def status_in_right_field(self, fields, num):
         return "Open" in fields[num] or "Closed" in fields[num]
@@ -166,7 +168,6 @@ class Course():
             day arguments, starting time, and ending time
             Input: meeting_times string fed from __init__
         """
-        print(meeting_times)
         if "to be arranged" in meeting_times:
             self.meeting_days = ["TBD"]
             self.meeting_time_start = "TBD"
@@ -184,7 +185,6 @@ class Course():
             latest time: 10:30 PM
             """
             meeting_times_split = meeting_times[1].split('-')
-            print(meeting_times_split)
             start_time_list = list(meeting_times_split[0])
             end_time_list = list(meeting_times_split[1])
             """
