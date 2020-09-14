@@ -87,7 +87,7 @@ class Course():
         elif "/" in fields[3]:      # Checks for split credits
             self.is_split_credits = True
             self.lower_credit_limit, self.upper_credit_limit = fields[3].split("/")
-        else:  
+        else:
             self.lower_credit_limit, self.upper_credit_limit = fields[3], None
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
