@@ -115,7 +115,7 @@ class Course():
         """
         if "" in fields[7] or "CR/NC" in fields[7]:
             split_nit_combo = fields.pop(6).split()
-            if split_nit_combo[1] == "" and len(split_nit_combo) > 2:
+            if len(split_nit_combo) > 2 and split_nit_combo[1] == "":
                 # Splits names like "LUFFY MONKEY D."
                 split_nit_combo[0] = split_nit_combo[0] + split_nit_combo[2]
                 split_nit_combo.remove(split_nit_combo[1])
@@ -166,23 +166,67 @@ class Course():
             day arguments, starting time, and ending time
             Input: meeting_times string fed from __init__
         """
+        print(meeting_times)
         if "to be arranged" in meeting_times:
             self.meeting_days = ["TBD"]
             self.meeting_time_start = "TBD"
             self.meeting_time_end = "TBD"
         else:
+            """
+            parse days
+            """
             meeting_times = meeting_times.split(' ')
             self.meeting_days = re.findall("[A-Z][a-z]?[a-z]?", meeting_times[0])
-            self.meeting_time_start = list(meeting_times[1].split('-')[0])
-            self.meeting_time_start.insert(-2, ":")
-            self.meeting_time_start = ''.join(self.meeting_time_start)
-            self.meeting_time_end = list(meeting_times[1].split('-')[1])
-            if "P" in self.meeting_time_end:
-                self.meeting_time_end.insert(-3, ":")
-                self.meeting_time_end.append("M")
+
+            """
+            parse times
+            earliest time: 6:30 AM
+            latest time: 10:30 PM
+            """
+            meeting_times_split = meeting_times[1].split('-')
+            print(meeting_times_split)
+            start_time_list = list(meeting_times_split[0])
+            end_time_list = list(meeting_times_split[1])
+            """
+            parsing class end time
+            """
+            end_time = ""
+            end_time_pm = False
+            if "P" in end_time_list:
+                if len(end_time_list[:-1]) == 4:
+                    end_time += str(int(''.join(end_time_list[0:2])) +
+                                    12) + ":" + ''.join(end_time_list[2:-1])
+                elif len(end_time_list[:-1]) == 3:
+                    end_time = str(int(end_time_list[0]) + 12) + ":" + ''.join(end_time_list[1:-1])
+                end_time_pm = True
             else:
-                self.meeting_time_end.insert(-2, ':')
-            self.meeting_time_end = ''.join(self.meeting_time_end)
+                if len(end_time_list) == 4:
+                    end_time_list.insert(2, ":")
+                    end_time = ''.join(end_time_list)
+                elif len(end_time_list) == 3:
+                    if int(end_time_list[0]) < 6:
+                        end_time += str(int(end_time_list[0]) + 12)
+                        end_time += (":" + ''.join(end_time_list[1:]))
+                    else:
+                        end_time_list.insert(1, ':')
+                        end_time += ''.join(end_time_list)
+            """
+            parsing class start time
+            """
+            start_time = ""
+            if len(start_time_list) == 3:
+                if int(start_time_list[0]) < 6 or (int(start_time_list[0]) == 6 and end_time_pm)\
+                        or end_time_pm:
+                    start_time = str(int(start_time_list[0]) + 12) + \
+                        ":" + ''.join(start_time_list[1:])
+                else:
+                    start_time_list.insert(1, ":")
+                    start_time = ''.join(start_time_list)
+            elif len(start_time_list) == 4:
+                start_time_list.insert(2, ":")
+                start_time = ''.join(start_time_list)
+            self.meeting_time_start = start_time
+            self.meeting_time_end = end_time
 
     def parse_enrollment(self, split_enroll):
         """
@@ -191,7 +235,6 @@ class Course():
         Output: currently_enrolled: 15, enrollment_limit: 30
         """
         enrollment_codes = ['E', 'C']
-
         if len(split_enroll) > 1:
             for code in enrollment_codes:
                 split_enroll[1] = split_enroll[1].replace(code, "")
