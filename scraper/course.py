@@ -45,8 +45,8 @@ class Course():
         self.special_type = {}
 
         self.parse_header_row(header_row, quarter, year)
+        print(main_row)
         tokens = main_row.partition('\r\n')
-        print(tokens)
         self.description = " ".join(tokens[2].split())
 
         fields = [tokens[0]

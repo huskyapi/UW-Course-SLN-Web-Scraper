@@ -22,7 +22,8 @@ class SpecialTypes(object):
         }
         split_types = [char for char in special_types]
         for type_char in split_types:
-            setattr(self, types_list.get(type_char), True)
+            if not types_list.get(type_char, {}):
+                setattr(self, types_list.get(type_char), True)
 
 
 def parse_special_types(special_type_full):
