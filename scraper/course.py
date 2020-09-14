@@ -78,15 +78,16 @@ class Course():
         self.sln = fields[1] if ">" not in fields[1] else fields[1].replace(">", "")
         self.section_id = fields[2]
         # Credit parsing
-        self.is_split_credits = False
-        if "-" in fields[3]:
+        self.is_split_credits, self.secondary_section = False, None 
+        if fields[3].isalpha(): # Checks if credits field is a lab section (Only letters)
+            self.secondary_section = fields[3]
+            self.lower_credit_limit, self.upper_credit_limit = None, None
+        elif "-" in fields[3]: # Checks for range credits 
             self.lower_credit_limit, self.upper_credit_limit = fields[3].split("-")
-        elif "/" in fields[3]:
+        elif "/" in fields[3]: # Checks for split credits 
             self.is_split_credits = True
-            split_credits = fields[3].split("/")
-            self.lower_credit_limit = split_credits[0]
-            self.upper_credit_limit = split_credits[1]
-        else:
+            self.lower_credit_limit, self.upper_credit_limit = fields[3].split("/")
+        else:  
             self.lower_credit_limit, self.upper_credit_limit = fields[3], None
         meeting_times = ' '.join(fields[4].split())
         self.parse_meeting_times(meeting_times)
