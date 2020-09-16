@@ -15,12 +15,16 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     # No interaction questions from Poetry
     POETRY_NO_INTERACTION=1 \
+    ## Web Driver ##
+    CHROME_DRIVER_VERSION="LATEST_RELEASE" \
     ## paths ##
     # Location of requirements + virtual environment
     PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv/"
+    VENV_PATH="/opt/pysetup/.venv/"\
+    WEBDRIVER_CHROME_PATH="/opt/webdriver/chrome"
 
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+ENV PATH="$WEBDRIVER_CHROME_PATH:$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 FROM python-base as builder-base
 RUN apt-get update \
@@ -28,7 +32,23 @@ RUN apt-get update \
     # dependencies for installing poetry
     curl \
     # dependencies for building python dependencies
-    build-essential
+    build-essential \
+    # dependencies for web driver
+    wget \
+    gnupg
+
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+RUN apt-get -y update
+RUN apt-get install -y google-chrome-stable
+
+# Get Web Driver (Chrome) 
+RUN mkdir -p $WEBDRIVER_CHROME_PATH
+RUN apt-get install -yqq unzip
+RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION`/chromedriver_linux64.zip
+RUN unzip /tmp/chromedriver.zip chromedriver -d $WEBDRIVER_CHROME_PATH
+ENV DISPLAY=:99
 
 # Install poetry (using $POETRY_VERSION and $POETRY_HOME)
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -53,4 +73,3 @@ RUN poetry shell
 
 COPY ./scraper $PYSETUP_PATH/scraper
 COPY main.py $PYSETUP_PATH/
-

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
+from scraper.scraper import get_courses_by_department
 import logging
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-from scraper.scraper import get_courses_by_department
-
 logging.basicConfig(
     format='%(asctime)s,%(msecs)d %(levelname)-8s '
            '[%(filename)s:%(lineno)d] %(message)s',
