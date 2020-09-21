@@ -17,10 +17,11 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_NO_INTERACTION=1 \
     ## Web Driver ##
     CHROME_DRIVER_VERSION="LATEST_RELEASE" \
+    CHROME_DRIVER_URL="chromedriver.storage.googleapis.com" \
     ## paths ##
     # Location of requirements + virtual environment
     PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv/"\
+    VENV_PATH="/opt/pysetup/.venv"\
     WEBDRIVER_CHROME_PATH="/opt/webdriver/chrome"
 
 
@@ -46,7 +47,7 @@ RUN apt-get install -y google-chrome-stable
 # Get Web Driver (Chrome) 
 RUN mkdir -p $WEBDRIVER_CHROME_PATH
 RUN apt-get install -yqq unzip
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION`/chromedriver_linux64.zip
+RUN wget -O /tmp/chromedriver.zip https://$CHROME_DRIVER_URL/`curl -sS $CHROME_DRIVER_URL/$CHROME_DRIVER_VERSION`/chromedriver_linux64.zip
 RUN unzip /tmp/chromedriver.zip chromedriver -d $WEBDRIVER_CHROME_PATH
 ENV DISPLAY=:99
 

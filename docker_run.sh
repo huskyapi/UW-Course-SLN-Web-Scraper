@@ -1,0 +1,1 @@
+docker run -d -it --name=husky husky-api python main.py container-mode

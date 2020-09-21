@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import logging
 from scraper.scraper import get_courses_by_department
 
@@ -12,13 +13,14 @@ logging.basicConfig(
 
 log = logging.getLogger(__name__)
 
-SEASONS = ["AUTUMN", "WINTER", "SPRING", "SUMMER"]
-YEARS = ["2003", "2004", "2005", "2006", "2007", "2008",
-         "2009", "2010", "2011", "2012", "2013", "2014", "2015",
-         "2016", "2017", "2018", "2019", "2020"]
+SEASONS = ["AUTUMN"]
+YEARS = ["2007"]
 DEPARTMENT = "CSS"
 CAMPUS = "Bothell"
 OUTPUT_FILE = "courses.json"
+
+if "container-mode" in sys.argv:
+    log.info("INFO - ENVIRONMENT: Running on a docker container.")
 
 log.info("Starting web scraper...")
 for s in SEASONS:
