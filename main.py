@@ -18,11 +18,15 @@ YEARS = ["2003", "2004", "2005", "2006", "2007", "2008",
          "2016", "2017", "2018", "2019", "2020"]
 DEPARTMENT = "CSS"
 CAMPUS = "Bothell"
-OUTPUT_FILE = "courses.json"
+
+SLN_ONLY = True
 
 log.info("Starting web scraper...")
 for s in SEASONS:
     for y in YEARS:
-        log.info(f"Getting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
-        get_courses_by_department(CAMPUS, s, y, DEPARTMENT, OUTPUT_FILE)
-log.info("Scraping complete! See {OUTPUT_FILE} for results.")
+        if not SLN_ONLY:
+            log.info(f"Getting courses for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
+            get_courses_by_department(CAMPUS, s, y, DEPARTMENT, "courses.json", False)
+        else:
+            log.info(f"Getting course SLNs for {DEPARTMENT} in {s}{y} at {CAMPUS}...")
+            get_courses_by_department(CAMPUS, s, y, DEPARTMENT, "course_sln.json", True)
