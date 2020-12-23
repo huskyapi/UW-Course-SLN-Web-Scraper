@@ -11,15 +11,11 @@ jobs:
   include:
     - stage: lint
       install:
-        - pip install poetry
-        - poetry install
+        - pip install -r requirements.txt
       script:
-        - poetry run flake8 scraper tests
+        - flake8 scraper tests
     - stage: test
       install:
-        - pip install poetry
-        - pip install --upgrade pip
-        - poetry install
+        - pip install -r requirements.txt
       script:
-        - poetry check
         - python -m pytest tests/
