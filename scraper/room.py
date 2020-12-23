@@ -1,7 +1,7 @@
 import re
 
 
-class Room():
+class Room:
     """
         Organizes room information into following:
         building code, and room number.

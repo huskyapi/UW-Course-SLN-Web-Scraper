@@ -1,7 +1,7 @@
 import requests
 
 
-class InstructorFallback():
+class InstructorFallback:
     """
         Created when the Faculty API fails to retrieve
         teacher information.

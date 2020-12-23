@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 from scraper.scraper import get_courses_by_department
 
